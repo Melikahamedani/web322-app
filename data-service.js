@@ -6,16 +6,22 @@ let departments = [];
 //initialize()
 module.exports.initialize = function () {
     return new Promise((resolve, reject) => {
-      fs.readFile("./data/employees.json", (err, data) => {
-        if (err) reject("Failure to read file employees.json!");
-        employees = JSON.parse(data);
-        resolve();
-      });
-      fs.readFile("./data/departments.json", (err, data) => {
-        if (err) reject("Failure to read file departments.json!");
-        programs = JSON.parse(data);
-      });
-      resolve();
+        try{
+            fs.readFile("./data/employees.json", (err, data) => {
+                if (err) reject("Failure to read file employees.json!");
+                employees = JSON.parse(data);
+                resolve();
+              });
+              fs.readFile("./data/departments.json", (err, data) => {
+                if (err) reject("Failure to read file departments.json!");
+                programs = JSON.parse(data);
+              });
+        }
+        catch(err){
+            reject("unable to read file")
+            console.log("unable to read file");
+        }
+      resolve("Success");
     });
   };
 
@@ -23,8 +29,8 @@ module.exports.initialize = function () {
 //getAllEmployees
 module.exports.getAllEmployees = function() {
     return new Promise((resolve, reject) => {
-        if (employees.length == 0){
-            reject(Error("no results returned"))
+        if (employees.length === 0){
+            reject('no results returned');
         } 
         else{
             resolve(employees);
@@ -38,13 +44,12 @@ module.exports.getManagers = function() {
     return new Promise((resolve, reject) => {
         const managers = []
         for (let i = 0; i < employees.length; i++) {
-            const element = employees[i];
-            if (element.isManager){
-                managers.push(element) 
+            if (element.isManager ===true){
+                managers.push(element[i]) 
             }
         }
-        if (managers.length == 0) {
-            reject(Error("no results returned"))
+        if (managers.length === 0) {
+            reject('no results returned');
         }
         else{
             resolve(managers);
@@ -56,8 +61,8 @@ module.exports.getManagers = function() {
 //getDepartments
 exports.getDepartments = function (){
     return new Promise((resolve, reject) => {
-        if (departments.length == 0){
-            reject(Error("no results returned"))
+        if (departments.length === 0){
+            reject('no results returned');
         } 
         else{
             resolve(departments);
