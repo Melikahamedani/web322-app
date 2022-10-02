@@ -30,33 +30,32 @@ let departments = [];
 //getAllEmployees
 module.exports.getAllEmployees = function() {
     return new Promise((resolve, reject) => {
+        debugger;
         if (employees.length === 0){
             reject('no results returned');
         } 
         else{
             resolve(employees);
         }
-    })
-};
+    });
+}
 
 
-//getManagers
+// getManagers
 module.exports.getManagers = function() {
-    const managers = []
     return new Promise((resolve, reject) => {
+        let managers = []
         for (let i = 0; i < employees.length; i++) {
-            if (employees[i].isManager) {
-                employees[managers.length] = employees[i];
+            if (employees[i].isManager === true) {
+                managers.push(employees[i]);
             }
         }
         if (managers.length === 0) {
             reject('no results returned');
         }
-        else{
-            resolve(managers);
-        }
-    })
-};
+        resolve(managers);
+    });
+}
 
 
 //getDepartments
@@ -68,5 +67,5 @@ module.exports.getDepartments = function (){
         else{
             resolve(departments);
         }
-    })
-};
+    });
+}
