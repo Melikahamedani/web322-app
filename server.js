@@ -1,48 +1,4 @@
 
-// require('dotenv').config()
-
-
-
-
-
-
-
-
-
-
-// app.get('/employees', (req, res) => {
-//     dataService.getAllEmployees()
-//         .then(data => res.json(data))
-//         .catch(err => console.log(err))
-
-// })
-// app.get('/managers', (req, res) => {
-//     dataService.getManagers()
-//         .then(data => res.json(data))
-//         .catch(err => console.log(err))
-// })
-// app.get('/departments', (req, res) => {
-//     dataService.getDepartments()
-//         .then(data => res.json(data))
-//         .catch(err => console.log(err))
-// })
-// app.get('*', function (req, res) {
-//     res.sendFile('./views/404.html', { root: __dirname })
-// })
-// dataService.initialize()
-//     .then(
-//         app.listen(port, () => {
-//             console.log(`Express http server listening on ${port}`)
-//         })
-//     )
-//     .catch(err => console.log(err))
-
-
-
-
-
-
-
 var express = require("express"); 
 var dataService = require('./data-service')
 var app = express();
@@ -66,23 +22,57 @@ app.get("/about", function(req, res){
     res.sendFile(path.join(__dirname, "/views/about.html"));
 });
 
+//Employees
+app.get("/employees", function(req,res){
+    dataService.getCategories().then((data) => {
+         res.json(data);
+         }).catch((err)=>{
+         res.json(err);
+     })
+ });
 
-app.get('/employees', (req, res) => {
-    dataService.getAllEmployees()
-        .then(data => res.json(data))
-        .catch(err => console.log(err))
+//Managers
+app.get("/managers", function(req,res){
+    dataService.getCategories().then((data) => {
+         res.json(data);
+         console.log("TODO: get all employees who have isManager==true");
+         }).catch((err)=>{
+         res.json(err);
+     })
+ });
 
-})
-app.get('/managers', (req, res) => {
-    dataService.getManagers()
-        .then(data => res.json(data))
-        .catch(err => console.log(err))
-})
-app.get('/departments', (req, res) => {
-    dataService.getDepartments()
-        .then(data => res.json(data))
-        .catch(err => console.log(err))
+ //Departments
+app.get("/departments", function(req,res){
+    dataService.getCategories().then((data) => {
+         res.json(data);
+         }).catch((err)=>{
+         res.json(err);
+     })
+ });
+
+
+ app.use(function(req,res){
+     res.status(404).json({
+         status:'error',
+      error:{
+             message: 'Page not found',
+             code: 404,
+             },
+     });
+ })
+ 
+ app.use(function(req,res){
+    res.status(404).json({
+        status:'error',
+     error:{
+            message: 'Page not found',
+            code: 404,
+            },
+    });
 })
 
-//setup http server to listen on HTTP_PORT
-app.listen(HTTP_PORT, onHttpStart);
+blogService.initialize().then(() => {
+    app.listen(HTTP_PORT);
+}).catch (() => {
+    console.log("couldn't initialized the server" + err);
+});
