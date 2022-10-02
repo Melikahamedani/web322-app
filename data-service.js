@@ -59,7 +59,7 @@ module.exports.getManagers = function() {
 
 
 //getDepartments
-exports.getDepartments = function (){
+module.exports.getDepartments = function (){
     return new Promise((resolve, reject) => {
         if (departments.length === 0){
             reject('no results returned');
