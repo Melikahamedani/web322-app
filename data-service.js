@@ -1,7 +1,7 @@
 const fs = require('fs');
-const express =require("express")
 let employees = [];
 let departments = [];
+
 
 //initialize()
 module.exports.initialize =function () {
@@ -42,9 +42,9 @@ exports.getManagers = () => {
     return new Promise((resolve, reject) => {
         const managers = []
         for (let i = 0; i < employees.length; i++) {
+            const element = employees[i];
             if (element.isManager){
                 managers.push(element) 
-                const element = employees[i];
             }
         }
         if (managers.length == 0) {

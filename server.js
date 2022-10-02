@@ -13,7 +13,8 @@
 var express = require("express"); 
 var dataService = require('./data-service')
 var app = express();
-var path = require("path"); 
+var path = require("path");
+require('dotenv').config() 
 
 var HTTP_PORT = process.env.PORT || 8080;  
 console.log("Express http server listening on: " + HTTP_PORT);
