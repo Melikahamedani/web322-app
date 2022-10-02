@@ -1,45 +1,69 @@
-const fs = require('fs')
+const fs = require('fs');
+const express =require("express")
+let employees = [];
+let departments = [];
 
-
-let employees;
-let departments;
-
-exports.initialize = () => {
-    return new Promise((resolve, reject) => {
-        fs.readFile('./data/employees.json', (err, data) => {
-            if (err) reject("Failure to read file employees.json!");
-            employees = JSON.parse(data);
-            fs.readFile('./data/departments.json', (err, data) => {
-                if (err) reject("Failure to read file departments.json!");
-                departments = JSON.parse(data);
-                resolve()
-            })
+//initialize()
+module.exports.initialize =function () {
+    return new Promise ((resolve, reject) => {
+        try{
+            fs.readFile('./data/employees.json', (err,data) => {
+            if (err) 
+            throw err;
+            employees = JSON.parse(data);         
         })
+
+            fs.readFile('./data/departments.json', (err,data)=> {
+            if (err)
+            throw (err);
+            departments = JSON.parse(data);         
+            })
+        }catch(err){
+                reject("unable to read file")
+            }
+        resolve("success");
     })
 }
 
+
+//getAllEmployees
 exports.getAllEmployees = () => {
     return new Promise((resolve, reject) => {
-        if (employees.length == 0) reject(Error("no results (employees) returned"))
-        resolve(employees)
+        if (employees.length == 0){
+            reject(Error("no results (employees) returned"))
+            resolve(employees)
+        } 
     })
 }
 
+
+//getManagers
 exports.getManagers = () => {
     return new Promise((resolve, reject) => {
         const managers = []
-        for (let index = 0; index < employees.length; index++) {
-            const element = employees[index];
-            if (element.isManager) managers.push(element)
+        for (let i = 0; i < employees.length; i++) {
+            if (element.isManager){
+                managers.push(element) 
+                const element = employees[i];
+            }
         }
-        resolve(managers)
-        if (managers.length == 0) reject(Error("no results (managers) returned"))
+        if (managers.length == 0) {
+            reject(Error("no results (managers) returned"))
+            resolve(managers)
+        }
     })
 }
 
+
+//getDepartments
 exports.getDepartments = () => {
     return new Promise((resolve, reject) => {
-        if (departments.length == 0) reject(Error("no results (departments) returned"))
-        resolve(departments)
+        if (departments.length == 0){
+            reject(Error("no results (departments) returned"))
+            resolve(departments)
+        } 
     })
 }
+
+
+
