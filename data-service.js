@@ -7,16 +7,13 @@ let departments = [];
 module.exports.initialize =function () {
     return new Promise ((resolve, reject) => {
         try{
-            fs.readFile('./data/employees.json', (err,data) => {
-            if (err) 
-            throw err;
-            employees = JSON.parse(data);         
-        })
-            fs.readFile('./data/departments.json', (err,data)=> {
-            if (err)
-            throw (err);
-            departments = JSON.parse(data);         
-            })
+            fs.readFile("./data/employees.json", (err, data) => {
+                if (err) reject("Unable to read the file");
+                resolve();
+              });
+              fs.readFile("./data/programs.JSON", (err, data) => {
+                programs = JSON.parse(data);
+              });
         }catch(err){
                 reject("unable to read file")
             }
@@ -26,7 +23,7 @@ module.exports.initialize =function () {
 
 
 //getAllEmployees
-exports.getAllEmployees = () => {
+exports.getAllEmployees = function() {
     return new Promise((resolve, reject) => {
         if (employees.length == 0){
             reject(Error("no results returned"))
@@ -39,7 +36,7 @@ exports.getAllEmployees = () => {
 
 
 //getManagers
-exports.getManagers = () => {
+exports.getManagers = function() {
     return new Promise((resolve, reject) => {
         const managers = []
         for (let i = 0; i < employees.length; i++) {
@@ -59,7 +56,7 @@ exports.getManagers = () => {
 
 
 //getDepartments
-exports.getDepartments = () => {
+exports.getDepartments = function (){
     return new Promise((resolve, reject) => {
         if (departments.length == 0){
             reject(Error("no results returned"))
