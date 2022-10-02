@@ -1,72 +1,81 @@
-let fs = require('fs');
-let employees = [];
-let departments = [];
+/************************************************************************* 
+ *  WEB322– Assignment 2 
+ * I declare that this assignment is my own work in accordance with Seneca Academic 
+ Policy. No part * of this assignment has been copied manually or electronically from any
+ other source 
+ *  (including 3rd party web sites) or distributed to other students. 
+ * 
+ * Name: Melika Hamedani  Student ID: 175474212  Date: 02/10/2022 
+ * 
+ * Your app’s URL (from Cyclic) :
+ * 
+ * *************************************************************************/
+ var HTTP_PORT = process.env.PORT || 8080;  
+ var express = require('express'); 
+ var app = express();
+ var path = require('path');
+ var dataService = require('./data-service')
 
 
-//initialize()
-  module.exports.initialize = function(){
-    return new Promise((resolve, reject) => {
-        try {
-            fs.readFile("./data/employees.json", 'utf8',
-                (err, data) => {
-                    if (err) throw "Failure to read file employees.json!";
-                    employees = JSON.parse(data);
-                    
-                });
-            fs.readFile("./data/departments.json", 'utf8',
-                (err, data) => {
-                    if (err)throw "Failure to read file departments.json!";
-                    departments = JSON.parse(data);
+ function onHttpStart() {
+    console.log("Express http server listening on: " + HTTP_PORT);
+}
 
-                });
-        } catch (err) {
-            reject("unable to read files.");
-        }
-        resolve("Read Success");
+
+app.use(express.static('public'))
+
+
+//setup route to listen on /
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/home.html'));
+})
+
+
+// setup another route to listen on /about
+app.get('/about', function(req, res){
+    res.sendFile(path.join(__dirname, '/views/about.html'));
+});
+
+ //Departments
+ app.get('/departments', function(req,res){
+    dataService.getDepartments().then((data) => {
+        res.json(data);
+    }).catch((err)=>{
+        res.json({message: err});
     })
-};
+});
 
 
-//getAllEmployees
-module.exports.getAllEmployees = function() {
-    return new Promise((resolve, reject) => {
-        if (employees.length === 0){
-            reject('no results returned');
-        } 
-        else{
-            resolve(employees);
-        }
+//Employees
+app.get('/employees', function(req,res){
+    dataService.getAllEmployees().then((data) => {
+        res.json(data);
+    }).catch((err)=>{
+        res.json({message:err});
     })
-};
+});
 
 
-//getManagers
-module.exports.getManagers = function() {
-    const managers = []
-    return new Promise((resolve, reject) => {
-        for (let i = 0; i < employees.length; i++) {
-            if (employees[i].isManager) {
-                employees[managers.length] = employees[i];
-            }
-        }
-        if (managers.length === 0) {
-            reject('no results returned');
-        }
-        else{
-            resolve(managers);
-        }
+//Managers
+app.get('/managers', function(req,res){
+    dataService.getManagers().then((data) => {
+        res.json(data);
+        console.log("TODO: get all employees who have isManager==true");
+    }).catch((err)=>{
+        res.json({message:err});
     })
-};
+});
 
 
-//getDepartments
-module.exports.getDepartments = function (){
-    return new Promise((resolve, reject) => {
-        if (departments.length === 0){
-            reject('no results returned');
-        } 
-        else{
-            resolve(departments);
-        }
-    })
-};
+ //get error 404
+app.get("/*", function(req,res){
+    res.status(404).json({ error: 'Page Not Found' })
+});
+
+
+//initialize
+data_service.initialize().then(() => {
+    app.listen(HTTP_PORT, onHttpStart);
+}).catch(() => {
+    console.log("Unable to load data");
+});
