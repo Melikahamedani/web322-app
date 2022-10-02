@@ -12,13 +12,11 @@
  * *************************************************************************/
 var express = require('express'); 
 var dataService = require('./data-service')
-require('dotenv').config() 
 var app = express();
 var path = require('path');
 
 const port = process.env.PORT
 
-app.use(express.static('public'))
 
 var HTTP_PORT = process.env.PORT || 8080;  
 console.log("Express http server listening on: " + HTTP_PORT);
@@ -27,8 +25,8 @@ console.log("Express http server listening on: " + HTTP_PORT);
 app.use(express.static('public'))
 
 //setup route to listen on /
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/home.html'));
+app.get("/", function(req,res){
+    res.redirect("/home");
 });
 
 // setup another route to listen on /about
@@ -51,7 +49,7 @@ app.get('/managers', function(req,res){
          res.json(data);
          console.log("TODO: get all employees who have isManager==true");
          }).catch((err)=>{
-         res.json({message:err});
+         res.json(err);
      })
  });
 
@@ -75,10 +73,8 @@ app.get('/departments', function(req,res){
     });
 })
 
-dataService.initialize()
-    .then(
-        app.listen(port, () => {
-            console.log(`Express http server listening on ${port}`)
-        })
-    )
-    .catch(err => console.log(err))
+dataService.initialize().then(() => {
+    app.listen(HTTP_PORT);
+}).catch (() => {
+    console.log("Could not initialized the server" + err);
+});
