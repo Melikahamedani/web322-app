@@ -12,7 +12,6 @@ module.exports.initialize =function () {
             throw err;
             employees = JSON.parse(data);         
         })
-
             fs.readFile('./data/departments.json', (err,data)=> {
             if (err)
             throw (err);
@@ -23,18 +22,20 @@ module.exports.initialize =function () {
             }
         resolve("success");
     })
-}
+};
 
 
 //getAllEmployees
 exports.getAllEmployees = () => {
     return new Promise((resolve, reject) => {
         if (employees.length == 0){
-            reject(Error("no results (employees) returned"))
-            resolve(employees)
+            reject(Error("no results returned"))
         } 
+        else{
+            resolve(employees);
+        }
     })
-}
+};
 
 
 //getManagers
@@ -48,22 +49,24 @@ exports.getManagers = () => {
             }
         }
         if (managers.length == 0) {
-            reject(Error("no results (managers) returned"))
-            resolve(managers)
+            reject(Error("no results returned"))
+        }
+        else{
+            resolve(managers);
         }
     })
-}
+};
 
 
 //getDepartments
 exports.getDepartments = () => {
     return new Promise((resolve, reject) => {
         if (departments.length == 0){
-            reject(Error("no results (departments) returned"))
-            resolve(departments)
+            reject(Error("no results returned"))
         } 
+        else{
+            resolve(departments);
+        }
     })
-}
-
-
+};
 
