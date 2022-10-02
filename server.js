@@ -15,37 +15,38 @@ var dataService = require('./data-service')
 var app = express();
 var path = require('path');
 
-const port = process.env.PORT
-
-
 var HTTP_PORT = process.env.PORT || 8080;  
 console.log("Express http server listening on: " + HTTP_PORT);
 
 
 app.use(express.static('public'))
 
+
 //setup route to listen on /
-app.get("/", function(req,res){
-    res.redirect("/home");
-});
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/home.html'));
+})
+
 
 // setup another route to listen on /about
 app.get('/about', function(req, res){
     res.sendFile(path.join(__dirname, '/views/about.html'));
 });
 
+
 //Employees
 app.get('/employees', function(req,res){
-    dataService.getCategories().then((data) => {
+    dataService.getAllEmployees().then((data) => {
          res.json(data);
          }).catch((err)=>{
          res.json({message:err});
      })
  });
 
+
 //Managers
 app.get('/managers', function(req,res){
-    dataService.getCategories().then((data) => {
+    dataService.getManagers().then((data) => {
          res.json(data);
          console.log("TODO: get all employees who have isManager==true");
          }).catch((err)=>{
@@ -53,14 +54,16 @@ app.get('/managers', function(req,res){
      })
  });
 
+
  //Departments
-app.get('/departments', function(req,res){
-    dataService.getCategories().then((data) => {
+app.get('/employees', function(req,res){
+    dataService.getDepartments().then((data) => {
          res.json(data);
          }).catch((err)=>{
          res.json({message: err});
      })
  });
+
 
  //get error 404
  app.use(function(req,res){
@@ -73,8 +76,12 @@ app.get('/departments', function(req,res){
     });
 })
 
-dataService.initialize().then(() => {
-    app.listen(HTTP_PORT);
-}).catch (() => {
-    console.log("Could not initialized the server" + err);
-});
+
+//initialize
+dataService.initialize().then(
+        app.listen(HTTP_PORT, () => {
+            console.log(`Express http server listening to the ${HTTP_PORT}`)
+        })
+    ).catch (() => {
+        console.log(`couldn't initialized the server ${err}`)
+    })
