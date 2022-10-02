@@ -56,7 +56,7 @@ app.get("/managers", function(req,res){
 });
 
 app.get('*', function (req, res) {
-    res.sendFile('/public/image/404.jpg', { root: __dirname })
+    res.sendFile(path.join(__dirname,"/public/image/404.jpg"));
 })
 
 
